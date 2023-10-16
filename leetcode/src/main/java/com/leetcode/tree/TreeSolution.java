@@ -10,20 +10,11 @@ public class TreeSolution {
     public TreeNode tree;
 
     public TreeNode buildTree(Integer[] preOrder,Integer[] inOrder){
-
-        Integer headVal = inOrder[0];
-        Integer leftLen = 0;
-        while (leftLen<preOrder.length){
-            if (headVal==preOrder[leftLen]){
-                break;
-            }
-            leftLen++;
+        if(preOrder == null || inOrder==null){
+            return null;
         }
-        TreeNode head = new TreeNode(preOrder[0]);
-        head.left = buildTree(preOrder,inOrder,0,leftLen-1,1,leftLen);
-        head.right = buildTree(preOrder,inOrder,leftLen+1,preOrder.length-1,leftLen+1,preOrder.length);
 
-        return head;
+        return buildTree(preOrder,inOrder,0,preOrder.length-1,0,inOrder.length-1);
     }
 
     public TreeNode buildTree(Integer[] preOrder,Integer[] inOrder,int ps,int pe,int is,int ie){
@@ -37,8 +28,12 @@ public class TreeSolution {
             leftLen++;
         }
 //        int rightLen = pe-ps-leftLen;
-        head.left = buildTree(preOrder,inOrder,ps,ps+leftLen-1,is+1,is+leftLen);
-        head.right = buildTree(preOrder,inOrder,ps+leftLen+1,pe,is+leftLen+1,ie);
+        if(ie>is && leftLen>0){
+            head.left = buildTree(preOrder,inOrder,ps,ps+leftLen-1,is+1,is+leftLen);
+        }
+        if (pe>ps){
+            head.right = buildTree(preOrder,inOrder,ps+leftLen+1,pe,is+leftLen+1,ie);
+        }
 
         return head;
     }
@@ -50,9 +45,18 @@ public class TreeSolution {
     //94 ¶þ²æÊ÷ÖÐÐò±éÀú
     public List<Integer> inorderTraversal(TreeNode root) {
         List<Integer> retList = new ArrayList<>();
-
+        inorder(root,retList);
         return retList;
 
+    }
+
+    public void inorder(TreeNode root,List<Integer> retList){
+        if (root == null){
+            return;
+        }
+        inorder(root.left,retList);
+        retList.add(root.val);
+        inorder(root.right,retList);
     }
 
 }
